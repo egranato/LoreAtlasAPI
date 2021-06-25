@@ -27,15 +27,23 @@ namespace LoreAtlas.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-
       services.AddControllers();
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "LoreAtlas.API", Version = "v1" });
       });
+
       services.AddDbContext<DataContext>(opt =>
       {
         opt.UseSqlite(_config.GetConnectionString("DefaultConnection"));
+      });
+
+      services.AddCors(opt =>
+      {
+        opt.AddPolicy("CorsPolicy", policy =>
+        {
+          policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:4200");
+        });
       });
     }
 
@@ -52,6 +60,8 @@ namespace LoreAtlas.API
       app.UseHttpsRedirection();
 
       app.UseRouting();
+
+      app.UseCors("CorsPolicy");
 
       app.UseAuthorization();
 
