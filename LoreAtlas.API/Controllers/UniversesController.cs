@@ -1,32 +1,49 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LoreAtlas.Application.Universes;
 using LoreAtlas.Domain;
-using LoreAtlas.Persistence;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LoreAtlas.API.Controllers
 {
-  public class UniversesController : ControllerBase
+  public class UniversesController : BaseApiController
   {
-    private readonly DataContext _context;
-    public UniversesController(DataContext context)
-    {
-      _context = context;
-
-    }
-
     [HttpGet]
     public async Task<ActionResult<List<Universe>>> GetUniverses()
     {
-      return await _context.Universes.ToListAsync();
+      return await Mediator.Send(new UniverseList.Query());
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Universe>> GetUniverse(Guid id)
     {
-      return await _context.Universes.FindAsync(id);
+      var query = new UniverseDetails.Query { Id = id };
+
+      return await Mediator.Send(query);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateUniverse(Universe universe)
+    {
+      var command = new UniverseCreate.Command { Universe = universe };
+
+      return Ok(await Mediator.Send(command));
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> EditUniverse(Guid id, Universe universe)
+    {
+      universe.Id = id;
+      var command = new UniverseEdit.Command { Universe = universe };
+      return Ok(await Mediator.Send(command));
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUniverse(Guid id)
+    {
+      var command = new UniverseDelete.Command { Id = id };
+      return Ok(await Mediator.Send(command));
     }
   }
 }
