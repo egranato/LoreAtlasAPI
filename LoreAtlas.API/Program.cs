@@ -29,7 +29,7 @@ namespace LoreAtlas.API
         var userManager = services.GetRequiredService<UserManager<User>>();
 
         await context.Database.MigrateAsync();
-        await Seed.SeedData(context, userManager);
+        // await Seed.SeedData(context, userManager);
       }
       catch (Exception ex)
       {
