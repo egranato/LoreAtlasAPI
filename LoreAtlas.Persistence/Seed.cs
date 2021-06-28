@@ -2,13 +2,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LoreAtlas.Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace LoreAtlas.Persistence
 {
   public class Seed
   {
-    public static async Task SeedData(DataContext context)
+    public static async Task SeedData(DataContext context, UserManager<User> userManager)
     {
+      if (!userManager.Users.Any())
+      {
+        var users = new List<User>
+        {
+          new User
+          {
+            DisplayName = "Ted",
+            UserName = "tedderino",
+            Email = "ted@test.com"
+          },
+          new User
+          {
+            DisplayName = "Robin",
+            UserName = "robinerino",
+            Email = "robin@test.com"
+          },
+          new User
+          {
+            DisplayName = "Kate",
+            UserName = "katerino",
+            Email = "kate@test.com"
+          },
+        };
+
+        foreach (var user in users)
+        {
+          await userManager.CreateAsync(user, "Pa$$w0rd");
+        }
+      }
+
       if (context.Universes.Any()) return;
 
       var universes = new List<Universe>

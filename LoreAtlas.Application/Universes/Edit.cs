@@ -4,17 +4,18 @@ using LoreAtlas.Domain;
 using LoreAtlas.Persistence;
 using MediatR;
 using AutoMapper;
+using LoreAtlas.Application.Core;
 
 namespace LoreAtlas.Application.Universes
 {
   public class UniverseEdit
   {
-    public class Command : IRequest
+    public class Command : IRequest<Result<Unit>>
     {
       public Universe Universe { get; set; }
     }
 
-    public class Handler : IRequestHandler<Command>
+    public class Handler : IRequestHandler<Command, Result<Unit>>
     {
       private readonly DataContext _context;
       private readonly IMapper _mapper;
@@ -24,15 +25,20 @@ namespace LoreAtlas.Application.Universes
         _context = context;
       }
 
-      public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+      public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
       {
         var universe = await _context.Universes.FindAsync(request.Universe.Id);
 
+        if (universe == null)
+        {
+          return null;
+        }
+
         _mapper.Map(request.Universe, universe);
 
-        await _context.SaveChangesAsync();
-
-        return Unit.Value;
+        return await _context.SaveChangesAsync() > 0
+          ? Result<Unit>.Success(Unit.Value)
+          : Result<Unit>.Failure("Failed to update universe");
       }
     }
   }

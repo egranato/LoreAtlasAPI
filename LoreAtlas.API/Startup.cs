@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using LoreAtlas.API.Extensions;
+using LoreAtlas.API.Middleware;
 
 namespace LoreAtlas.API
 {
@@ -20,14 +21,16 @@ namespace LoreAtlas.API
     {
       services.AddControllers();
       services.AddApplicationServices(_config);
+      services.AddIdentityServices(_config);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+      app.UseMiddleware<ExceptionMiddleware>();
+
       if (env.IsDevelopment())
       {
-        app.UseDeveloperExceptionPage();
         app.UseSwagger();
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LoreAtlas.API v1"));
       }
@@ -38,6 +41,7 @@ namespace LoreAtlas.API
 
       app.UseCors("CorsPolicy");
 
+      app.UseAuthentication();
       app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>

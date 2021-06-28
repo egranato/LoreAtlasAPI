@@ -3,11 +3,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LoreAtlas.Domain;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LoreAtlas.Persistence
 {
-  public class DataContext : DbContext
+  public class DataContext : IdentityDbContext<User>
   {
     public DataContext(DbContextOptions options) : base(options)
     {
@@ -26,7 +27,7 @@ namespace LoreAtlas.Persistence
 
         if (entityEntry.State == EntityState.Added)
         {
-            ((BaseEntity)entityEntry.Entity).CreatedDate = DateTime.Now;
+          ((BaseEntity)entityEntry.Entity).CreatedDate = DateTime.Now;
         }
       }
     }
