@@ -1,15 +1,9 @@
 const jwt = require("jsonwebtoken");
-const fs = require("fs");
-const path = require("path");
 const sessionQueries = require("../data/queries/session");
 const userQueries = require("../data/queries/user");
 
-const privateKey = fs
-  .readFileSync(path.join(__dirname, "../keys/jwtRS256.key"))
-  .toString();
-const publicKey = fs
-  .readFileSync(path.join(__dirname, "../keys/jwtRS256.key.pub"))
-  .toString();
+const privateKey = process.env.PRIVATE_KEY;
+const publicKey = process.env.PUBLIC_KEY;
 
 const signJwt = (payload, options) => {
   return jwt.sign(payload, privateKey, {
