@@ -9,6 +9,7 @@ const deserializeUser = require("./middleware/deserializeUser");
 const requireUser = require("./middleware/requireUser");
 
 // get route modules
+const indexRouter = require("./routes/index");
 const oauthRouter = require("./routes/oauth");
 const usersRouter = require("./routes/users");
 const sessionsRouter = require("./routes/sessions");
@@ -44,12 +45,13 @@ app.use(cors(corsOptions));
 app.use(deserializeUser);
 
 // unprotected routes
-app.use("/api/sessions/oauth", oauthRouter);
+app.use("/", indexRouter);
+app.use("/sessions/oauth", oauthRouter);
 
 // protected routes
 app.use(requireUser);
-app.use("/api/users", usersRouter);
-app.use("/api/sessions", sessionsRouter);
+app.use("/users", usersRouter);
+app.use("/sessions", sessionsRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
