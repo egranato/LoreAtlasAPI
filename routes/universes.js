@@ -16,6 +16,26 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/:id", async (req, res, next) => {
+  const universeId = req.params.id;
+
+  try {
+    const universe = await universeQueries.getUniverse(universeId);
+
+    if (universe) {
+      return res.send(universe);
+    } else {
+      const error = createError.NotFound(
+        `Could not find universe at id: ${universeId}`
+      );
+      return next(error);
+    }
+  } catch (e) {
+    const error = createError.InternalServerError("Could not get universe");
+    return next(error);
+  }
+});
+
 router.post("/", async (req, res, next) => {
   const userId = res.locals.user.id;
   const universe = req.body;
