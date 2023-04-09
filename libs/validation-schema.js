@@ -1,12 +1,17 @@
 const Joi = require("joi");
-const passwordComplexity = require("joi-password-complexity");
 
 module.exports = {
+  universeValidation: (universe) => {
+    const schema = Joi.object({
+      title: Joi.string().alphanum().max(255).required().label("Title"),
+      description: Joi.string().min(0).label("Description"),
+    });
+    return schema.validate(universe);
+  },
   signUpBodyValidation: (body) => {
     const schema = Joi.object({
       name: Joi.string().required().label("Name"),
       email: Joi.string().email().required().label("Email"),
-      password: passwordComplexity().required().label("Password"),
     });
     return schema.validate(body);
   },

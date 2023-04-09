@@ -6,6 +6,7 @@ exports.up = function (knex) {
   return knex.schema.createTable("universe", (t) => {
     t.increments("id");
     t.string("title").notNullable();
+    t.text("description").notNullable();
     t.integer("userId").notNullable();
     t.timestamps(true, true);
 

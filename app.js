@@ -13,6 +13,7 @@ const indexRouter = require("./routes/index");
 const oauthRouter = require("./routes/oauth");
 const usersRouter = require("./routes/users");
 const sessionsRouter = require("./routes/sessions");
+const universesRouter = require("./routes/universes");
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use("/sessions/oauth", oauthRouter);
 app.use(requireUser);
 app.use("/users", usersRouter);
 app.use("/sessions", sessionsRouter);
+app.use("/universes", universesRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -60,13 +62,12 @@ app.use((req, res, next) => {
 
 // error handler
 app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  const errorResponse = {
+    message: err.message,
+    error: process.env.NODE_ENV === "development" ? err : {},
+  };
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+  res.status(err.status || 500).send(errorResponse);
 });
 
 module.exports = app;
