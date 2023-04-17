@@ -7,7 +7,7 @@ exports.up = (knex) => {
     t.increments("id");
     t.string("email").unique().notNullable();
     t.string("name").notNullable();
-    t.enum("roles", ["user", "admin", "super_admin"])
+    t.enum("roles", ["user", "pro", "admin", "super_admin"])
       .notNullable()
       .defaultTo("user");
     t.timestamps(true, true);

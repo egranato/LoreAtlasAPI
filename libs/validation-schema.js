@@ -3,7 +3,7 @@ const Joi = require("joi");
 module.exports = {
   universeValidation: (universe) => {
     const schema = Joi.object({
-      title: Joi.string().alphanum().max(255).required().label("Title"),
+      title: Joi.string().max(255).required().label("Title"),
       description: Joi.string().min(0).label("Description"),
     });
     return schema.validate(universe);

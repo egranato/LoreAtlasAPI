@@ -14,4 +14,9 @@ module.exports = {
       .merge()
       .returning("*");
   },
+  updateUser: (id, data) => {
+    return db("user")
+      .update({ id, ...data })
+      .returning("*");
+  },
 };

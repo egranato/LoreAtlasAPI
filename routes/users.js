@@ -11,9 +11,23 @@ router.get("/", (req, res, next) => {
       res.send(userData);
     },
     (e) => {
-      res.send(createError.InternalServerError("Could not get user data"));
+      next(createError.InternalServerError("Could not get user data"));
     }
   );
+});
+
+router.patch("/", (req, res, next) => {
+  const userId = res.locals.user.id;
+  const userData = req.body;
+
+  userQueries
+    .updateUser(userId, userData)
+    .then((result) => {
+      res.send(result[0]);
+    })
+    .catch((error) => {
+      next(createError.InternalServerError("Could not update user data"));
+    });
 });
 
 module.exports = router;
